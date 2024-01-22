@@ -6,6 +6,7 @@ const app = express();
 
 // middleware
 app.use(morgan("dev"));
+app.use(express.json());
 
 // admin register
 app.use("/api/v1/admins", adminRouter);
