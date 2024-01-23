@@ -1,54 +1,46 @@
+const AsyncHandler = require("express-async-handler");
+const Admin = require("../../models/staff/Admin");
 // @desc   Register Admin
 // @route  POST /api/v1/admins/register
-
-const Admin = require("../../models/staff/Admin");
-
 // @access Private
 exports.registerAdminController = async (req, res) => {
   const { name, email, password, role } = req.body;
-  try {
-    // check if email exists
-    const adminFound = await Admin.findOne({ email });
-    if (adminFound) {
-      res.json('Admin Exists')
-    }
-    // register
-    const user = await Admin.create({
-      name,
-      email,
-      password,
-    });
-    res.status(201).json({
-      status: "success",
-      data: "Admin has been registered",
-    });
-  } catch (error) {
-    res.json({
-      status: "error",
-      message: error.message,
-    });
+
+  // check if email exists
+  const adminFound = await Admin.findOne({ email });
+  if (adminFound) {
+    res.json("Admin Exists");
   }
+  // register
+  const user = await Admin.create({
+    name,
+    email,
+    password,
+  });
+  res.status(201).json({
+    status: "success",
+    data: "Admin has been registered",
+  });
 };
 
 // @desc   Login Admin
 // @route  POST /api/v1/admins/login
 // @access Private
 exports.loginAdminController = async (req, res) => {
-  const {email, password} = req.body;
+  const { email, password } = req.body;
 
   try {
-    const user = await Admin.findOne({email});
+    const user = await Admin.findOne({ email });
 
     if (!user) {
-      return res.json({message: "User not found"})
+      return res.json({ message: "User not found" });
     }
 
-    if (user && await user.verifyPassword(password)) {
-      return res.json({data: user})
+    if (user && (await user.verifyPassword(password))) {
+      return res.json({ data: user });
     } else {
-      return res.json({message: "Invalid login credentials"})
+      return res.json({ message: "Invalid login credentials" });
     }
-  
   } catch (error) {
     res.json({
       status: "error",
