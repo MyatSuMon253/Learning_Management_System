@@ -1,5 +1,5 @@
 // global error handler middleware
-const globalErrorHandler = app.use((req, res, next, err) => {
+const globalErrorHandler = (req, res, next, err) => {
   const stack = err.stack;
   const message = err.message;
   const status = err.status || "failed";
@@ -10,6 +10,11 @@ const globalErrorHandler = app.use((req, res, next, err) => {
     message,
     stack,
   });
-});
+};
 
-module.exports = globalErrorHandler;
+const notFoundHandler = (req, res, next) => {
+  const err = new Error(`Can't find ${req.originalUrl} on this server!`);
+  next(err);
+};
+
+module.exports = { globalErrorHandler, notFoundHandler };
