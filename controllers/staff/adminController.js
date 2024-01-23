@@ -8,10 +8,10 @@ exports.registerAdminController = async (req, res) => {
   const { name, email, password, role } = req.body;
   try {
     // check if email exists
-    // const adminFound = await Admin.findOne({ email });
-    // if (adminFound) {
-    //   res.json('Admin Exists')
-    // }
+    const adminFound = await Admin.findOne({ email });
+    if (adminFound) {
+      res.json('Admin Exists')
+    }
     // register
     const user = await Admin.create({
       name,
@@ -33,12 +33,22 @@ exports.registerAdminController = async (req, res) => {
 // @desc   Login Admin
 // @route  POST /api/v1/admins/login
 // @access Private
-exports.loginAdminController = (req, res) => {
+exports.loginAdminController = async (req, res) => {
+  const {email, password} = req.body;
+
   try {
-    res.status(200).json({
-      status: "success",
-      data: "Admin has been logged in",
-    });
+    const user = await Admin.findOne({email});
+
+    if (!user) {
+      return res.json({message: "User not found"})
+    }
+
+    if (user && await user.verifyPassword(password)) {
+      return res.json({data: user})
+    } else {
+      return res.json({message: "Invalid login credentials"})
+    }
+  
   } catch (error) {
     res.json({
       status: "error",
