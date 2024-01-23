@@ -1,3 +1,4 @@
+const bcrypt = require("bcryptjs");
 const mongoose = require("mongoose");
 
 const { Schema } = mongoose;
@@ -25,6 +26,14 @@ const adminSchema = new Schema(
     timestamps: true,
   }
 );
+// hash password before saving to database
+adminSchema.pre("save", async function (next) {
+  if (!this.isModified("password")) {
+    next()
+  }
+  const salt = await bcrypt.getSalt(10);
+  this.password = await bcrypt.hash(this.password, salt);
+});
 
 const Admin = mongoose.model("Admin", adminSchema);
 

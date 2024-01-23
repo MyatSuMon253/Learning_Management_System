@@ -8,10 +8,10 @@ exports.registerAdminController = async (req, res) => {
   const { name, email, password, role } = req.body;
   try {
     // check if email exists
-    const adminFound = await Admin.findOne({ email });
-    if (adminFound) {
-      res.json('Admin Exists')
-    }
+    // const adminFound = await Admin.findOne({ email });
+    // if (adminFound) {
+    //   res.json('Admin Exists')
+    // }
     // register
     const user = await Admin.create({
       name,
@@ -20,7 +20,7 @@ exports.registerAdminController = async (req, res) => {
     });
     res.status(201).json({
       status: "success",
-      data: user,
+      data: "Admin has been registered",
     });
   } catch (error) {
     res.json({
