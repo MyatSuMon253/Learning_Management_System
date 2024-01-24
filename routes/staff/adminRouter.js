@@ -13,6 +13,7 @@ const {
   adminUnpublishResultsController,
   adminPublishResultsController,
 } = require("../../controllers/staff/adminController");
+const isLogin = require('../../middlewares/isLogin')
 
 const adminRouter = express.Router();
 
@@ -26,7 +27,7 @@ adminRouter.post("/login", loginAdminController);
 adminRouter.get("/", getAllAdminController);
 
 // get single admin
-adminRouter.get("/:id", getSingleAdminController);
+adminRouter.get("/:id", isLogin, getSingleAdminController);
 
 // update admin
 adminRouter.put("/:id", updateAdminController);

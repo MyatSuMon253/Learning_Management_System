@@ -37,6 +37,8 @@ exports.loginAdminController = async (req, res) => {
     }
 
     if (user && (await user.verifyPassword(password))) {
+      // save the user into req obj
+      req.userAuth = user;
       return res.json({ data: user });
     } else {
       return res.json({ message: "Invalid login credentials" });
