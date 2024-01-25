@@ -1,5 +1,5 @@
 // global error handler middleware
-const globalErrorHandler = (req, res, next, err) => {
+const globalErrorHandler = (err, req, res, next) => {
   const stack = err.stack;
   const message = err.message;
   const status = err.status || "failed";

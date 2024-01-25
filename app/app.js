@@ -5,12 +5,14 @@ const {
   globalErrorHandler,
   notFoundHandler,
 } = require("../middlewares/globalErrorHandler");
+const isLogin = require("../middlewares/isLogin")
 
 const app = express();
 
 // middleware
 app.use(morgan("dev"));
 app.use(express.json());
+app.use(isLogin);
 
 // routes
 app.use("/api/v1/admins", adminRouter);

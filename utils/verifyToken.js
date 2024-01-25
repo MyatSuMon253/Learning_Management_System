@@ -3,7 +3,7 @@ const jwt = require("jsonwebtoken");
 const verifyToken = (token) => {
   return jwt.verify(token, "any_key", (err, decoded) => {
     if (err) {
-      return { message: "Invalid Token" };
+      return false;
     } else {
       return decoded;
     }

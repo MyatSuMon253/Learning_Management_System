@@ -1,7 +1,7 @@
 const AsyncHandler = require("express-async-handler");
 const Admin = require("../../models/staff/Admin");
 const generateToken = require("../../utils/generateToken");
-const verifyToken = require('../../utils/verifyToken')
+const verifyToken = require("../../utils/verifyToken");
 
 // @desc   Register Admin
 // @route  POST /api/v1/admins/register
@@ -40,11 +40,9 @@ exports.loginAdminController = AsyncHandler(async (req, res) => {
 
   if (user && (await user.verifyPassword(password))) {
     const token = generateToken(user._id);
-    if (token) {
-      const verify = verifyToken(token);
-      console.log(verify)
-    }
-    return res.json({ data: token});
+    const verify = verifyToken(token);
+
+    return res.json({ data: token, user, verify });
   } else {
     return res.json({ message: "Invalid login credentials" });
   }
@@ -72,6 +70,7 @@ exports.getAllAdminController = (req, res) => {
 // @access Private
 exports.getSingleAdminController = (req, res) => {
   try {
+    console.log(req.userAuth);
     res.status(200).json({
       status: "success",
       data: "Single Admin",
