@@ -3,7 +3,7 @@ const {
   registerAdminController,
   loginAdminController,
   getAllAdminController,
-  getSingleAdminController,
+  getAdminProfileController,
   updateAdminController,
   deleteAdminController,
   adminSuspendTeacherController,
@@ -27,7 +27,7 @@ adminRouter.post("/login", loginAdminController);
 adminRouter.get("/", getAllAdminController);
 
 // get single admin
-adminRouter.get("/:id", isLogin, getSingleAdminController);
+adminRouter.get("/profile", isLogin, getAdminProfileController);
 
 // update admin
 adminRouter.put("/:id", updateAdminController);

@@ -68,20 +68,18 @@ exports.getAllAdminController = (req, res) => {
 // @desc   Get Single Admin
 // @route  GET /api/v1/admins/:id
 // @access Private
-exports.getSingleAdminController = (req, res) => {
-  try {
-    console.log(req.userAuth);
+exports.getAdminProfileController = AsyncHandler(async (req, res) => {
+  const admin = await Admin.findById(req.userAuth._id);
+  console.log(admin);
+  if (!admin) {
+    throw new Error("Admin not found");
+  } else {
     res.status(200).json({
       status: "success",
-      data: "Single Admin",
-    });
-  } catch (error) {
-    res.json({
-      status: "error",
-      message: error.message,
+      data: admin,
     });
   }
-};
+});
 
 // @desc   Update Admin
 // @route  PUT /api/v1/admins/:id
