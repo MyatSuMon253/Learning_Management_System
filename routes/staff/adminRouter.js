@@ -24,7 +24,7 @@ adminRouter.post("/register", registerAdminController);
 adminRouter.post("/login", loginAdminController);
 
 // get all admins
-adminRouter.get("/", getAllAdminController);
+adminRouter.get("/", isLogin, getAllAdminController);
 
 // get single admin
 adminRouter.get("/profile", isLogin, getAdminProfileController);

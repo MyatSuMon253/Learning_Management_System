@@ -51,31 +51,26 @@ exports.loginAdminController = AsyncHandler(async (req, res) => {
 // @desc   Get All Admins
 // @route  GET /api/v1/admins
 // @access Private
-exports.getAllAdminController = (req, res) => {
-  try {
-    res.status(200).json({
-      status: "success",
-      data: "All Admins",
-    });
-  } catch (error) {
-    res.json({
-      status: "error",
-      message: error.message,
-    });
-  }
-};
+exports.getAllAdminController = AsyncHandler(async (req, res) => {
+  const admins = await Admin.find();
+  res.status(200).json({
+    status: "success",
+    message: "Admins retrieved successfully",
+    data: admins
+  });
+})
 
 // @desc   Get Single Admin
 // @route  GET /api/v1/admins/:id
 // @access Private
 exports.getAdminProfileController = AsyncHandler(async (req, res) => {
   const admin = await Admin.findById(req.userAuth._id);
-  console.log(admin);
   if (!admin) {
     throw new Error("Admin not found");
   } else {
     res.status(200).json({
       status: "success",
+      message: "Admin retrieved successfully",
       data: admin,
     });
   }
