@@ -2,7 +2,7 @@ const AsyncHandler = require("express-async-handler");
 const Admin = require("../../models/staff/Admin");
 const generateToken = require("../../utils/generateToken");
 const verifyToken = require("../../utils/verifyToken");
-const bcrypt = require("bcryptjs");
+const { hashPassword, isPassMatched } = require("../../utils/helpers");
 
 // @desc   Register Admin
 // @route  POST /api/v1/admins/register
@@ -16,15 +16,11 @@ exports.registerAdminController = async (req, res) => {
     res.json("Admin Exists");
   }
 
-  // hash password
-  const salt = await bcrypt.genSalt(10);
-  const passwordHashed = await bcrypt.hash(password, salt);
-
   // register
   const user = await Admin.create({
     name,
     email,
-    password: passwordHashed,
+    password: await hashPassword(password),
   });
   res.status(201).json({
     status: "success",
@@ -45,7 +41,7 @@ exports.loginAdminController = AsyncHandler(async (req, res) => {
   }
 
   // verify password
-  const isMatched = await bcrypt.compare(password, user.password);
+  const isMatched = await isPassMatched(password, user.password);
 
   if (!isMatched) {
     return res.json({ message: "Invalid login credentials" });
@@ -99,16 +95,12 @@ exports.updateAdminController = AsyncHandler(async (req, res) => {
 
   // check if the user is updating password
   if (password) {
-    // hash password
-    const salt = await bcrypt.genSalt(10);
-    const passwordHashed = await bcrypt.hash(password, salt);
-
     const admin = await Admin.findByIdAndUpdate(
       req.userAuth._id,
       {
         email,
         name,
-        passwordHashed,
+        password: await hashPassword(password),
       },
       {
         new: true,
