@@ -56,9 +56,9 @@ exports.getAllAdminController = AsyncHandler(async (req, res) => {
   res.status(200).json({
     status: "success",
     message: "Admins retrieved successfully",
-    data: admins
+    data: admins,
   });
-})
+});
 
 // @desc   Get Single Admin
 // @route  GET /api/v1/admins/:id
@@ -79,19 +79,29 @@ exports.getAdminProfileController = AsyncHandler(async (req, res) => {
 // @desc   Update Admin
 // @route  PUT /api/v1/admins/:id
 // @access Private
-exports.updateAdminController = (req, res) => {
-  try {
+exports.updateAdminController = AsyncHandler(async (req, res) => {
+  const { email, name, password } = req.body;
+  // if email is taken
+  const emailExist = await Admin.findOne({ email });
+  if (emailExist) {
+    throw new Error("This email is taken/exist");
+  } else {
+    // update
+    const admin = await Admin.findByIdAndUpdate(req.userAuth._id, {
+      email,
+      name,
+      password,
+    }, {
+      new: true, 
+      runValidators: true
+    });
     res.status(200).json({
       status: "success",
-      data: "Update Admin",
-    });
-  } catch (error) {
-    res.json({
-      status: "error",
-      message: error.message,
+      message: "Admin updated successfully",
+      data: admin,
     });
   }
-};
+});
 
 // @desc   Delete Admin
 // @route  DELETE /api/v1/admins/:id
