@@ -19,7 +19,7 @@ exports.registerAdminController = async (req, res) => {
   // hash password
   const salt = await bcrypt.genSalt(10);
   const passwordHashed = await bcrypt.hash(password, salt);
-  
+
   // register
   const user = await Admin.create({
     name,
@@ -92,16 +92,40 @@ exports.updateAdminController = AsyncHandler(async (req, res) => {
   const { email, name, password } = req.body;
   // if email is taken
   const emailExist = await Admin.findOne({ email });
+
   if (emailExist) {
     throw new Error("This email is taken/exist");
-  } else {
-    // update
+  }
+
+  // check if the user is updating password
+  if (password) {
+    // hash password
+    const salt = await bcrypt.genSalt(10);
+    const passwordHashed = await bcrypt.hash(password, salt);
+
     const admin = await Admin.findByIdAndUpdate(
       req.userAuth._id,
       {
         email,
         name,
-        password,
+        passwordHashed,
+      },
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
+    res.status(200).json({
+      status: "success",
+      message: "Admin updated successfully",
+      data: admin,
+    });
+  } else {
+    const admin = await Admin.findByIdAndUpdate(
+      req.userAuth._id,
+      {
+        email,
+        name,
       },
       {
         new: true,
